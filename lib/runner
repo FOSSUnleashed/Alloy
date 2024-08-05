@@ -1,0 +1,52 @@
+# Handle old generated alloy handles that pointed to $_alloy_root/bin/ instead of $_alloy_root
+if [ -z "${_alloy_root}" ]; then
+	_alloy_root="$(dirname ${dir})"
+fi
+
+# We need this set, use the same default as the alloy binary
+ALLOY_SYSDIR="${ALLOY_SYSDIR:-/usr/lib/alloy}"
+
+# Setup all the variables that get exported
+export _alloy_bin="${_alloy_root}/bin"
+export _alloy_sbin="${_alloy_root}/sbin"
+export _alloy_lib="${_alloy_root}/lib"
+export _alloy="${ALLOY_SYSDIR}/helper"
+
+export _alloy_root ALLOY_SYSDIR
+
+#
+# Handle main hook, if main exists then run that and only that
+#   it is expected to handle everything
+#
+
+if [[ -x "${_alloy_root}/hooks/main" ]]; then
+	exec "${_alloy_root}/hooks/main" "$@"
+fi
+
+#
+# Handle arg-commands
+#
+
+command="${1}"
+exe="${_alloy_bin}/${command}"
+shift
+
+if [[ -z "${command}" ]]; then
+	if [[ -x "${_alloy_root}/hooks/default" ]]; then
+		"${_alloy_root}/hooks/default"
+		exit $?
+	else
+		echo 'No command requested'
+		exit 1
+	fi
+elif [[ ! -e "${exe}" ]]; then
+	echo 'No such command:' "${command}"
+	exit 1
+fi
+
+if [[ -x "${exe}" ]]; then
+	exec ${prefix} "${exe}" "$@"
+else
+	echo "${exe}" not executable
+	exit 1
+fi

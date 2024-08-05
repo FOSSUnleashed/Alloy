@@ -1,0 +1,4 @@
+# This is the file loaded from `. $_alloy`
+
+test -z ''^'' && { . $ALLOY_SYSDIR^/help/rcxs; }
+test -n ''^'' && { . $ALLOY_SYSDIR/help/bash; }

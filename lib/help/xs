@@ -1,0 +1,19 @@
+fn bin {|bin *|
+	$_alloy_bin^/^$bin $*
+}
+
+fn sbin {|bin *|
+	$_alloy_sbin^/^$bin $*
+}
+
+fn lib {|lib|
+	. $_alloy_lib^/^$lib
+}
+
+fn sudobin {|bin *|
+	sudo $_alloy_bin^/^$bin $*
+}
+
+fn sudosbin {|bin *|
+	sudo $_alloy_sbin^/^$bin $*
+}

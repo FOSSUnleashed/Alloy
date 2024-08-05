@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+dir="${1}"
+bin="${2}"
+ALLOY_SYSDIR="${ALLOY_SYSDIR:-/usr/lib/alloy}"
+
+if [[ -z "${ALLOY_SYSDIR}" ]]; then
+	echo 'ALLOY_SYSDIR ('"${ALLOY_SYSDIR}"') does not exist!'
+	exit 1
+fi
+
+if [[ -z "${dir}" ]]; then
+	echo 'Usage: alloy <root_directory> <binary>'
+	echo 'Example: `alloy ~/mroot ~/bin/alloy.test`  Then running `alloy.test goats` will call ~/mroot/bin/goats.'
+	exit 1
+fi
+
+if [[ ! -d "${dir}" && ! -v NODIRCHECK ]]; then
+	echo "${dir}: not a directory!  This should be the directory where your scriptlets under bin/ are." >/dev/stderr
+	echo 'For example, if you had your scriptlets under ~/mroot/bin then you will want this to be ~/mroot.' >/dev/stderr
+	exit 1
+fi
+
+if [[ -e "${bin}" ]]; then
+	echo "${bin}: file exists!  Refusing to overwrite file with new handle." >/dev/stderr
+	exit 1
+fi
+
+if ! touch "${bin}"; then
+	exit 1
+fi
+
+cat > "${bin}" <<EOF
+#!/usr/bin/env bash
+_alloy_root='${dir}'
+prefix='${PREFIX}'
+ALLOY_SYSDIR='${ALLOY_SYSDIR}'
+. "\${ALLOY_SYSDIR}/runner"
+EOF
+
+chmod +x "${bin}"

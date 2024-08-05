@@ -1,0 +1,1 @@
+{~ $#noexport 0} && { . $ALLOY_SYSDIR^/help/rc } || { . $ALLOY_SYSDIR^/help/xs }

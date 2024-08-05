@@ -1,0 +1,29 @@
+function bin() {
+	bin="$1"
+	shift
+	"${_alloy_bin}/${bin}" "$@"
+}
+
+function sbin() {
+	bin="$1"
+	shift
+	"${_alloy_sbin}/${bin}" "$@"
+}
+
+function sudobin() {
+	bin="$1"
+	shift
+	sudo "${_alloy_bin}/${bin}" "$@"
+}
+
+function sudosbin() {
+	bin="$1"
+	shift
+	sudo "${_alloy_bin}/${sbin}" "$@"
+}
+
+function lib() {
+	for lib in "$@"; do
+		. "${_alloy_lib}/${lib}"
+	done
+}

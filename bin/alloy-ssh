@@ -1,0 +1,22 @@
+#!/usr/bin/env trash
+
+if {~ $ALLOY_SYSDIR ()} {
+	ALLOY_SYSDIR = /usr/lib/alloy
+}
+
+if {!access -d $ALLOY_SYSDIR} {
+	echo 'ALLOY_SYSDIR does not exist!'
+	exit 1
+}
+
+. $ALLOY_SYSDIR^/trash/bin $*
+
+_alloy_root = $dir
+
+{
+	echo '#!/usr/bin/env trash'
+	var _alloy_root PREFIX ALLOY_SYSDIR
+	echo '. $ALLOY_SYSDIR^/trash/alloy <={%split \  $SSH_ORIGINAL_COMMAND}'
+} > $bin
+
+chmod +x $bin
